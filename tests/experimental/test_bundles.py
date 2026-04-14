@@ -234,7 +234,7 @@ class TestExecuteBundleInSubprocess:
         assert flow_run.state is not None
         assert flow_run.state.is_running()
 
-    def test_extract_and_run_flow_starts_listener_before_bundle_deserialization(
+    def test_extract_and_run_flow_configures_listener_before_bundle_deserialization(
         self,
         engine_type: Literal["sync", "async"],
         monkeypatch: pytest.MonkeyPatch,
@@ -242,8 +242,8 @@ class TestExecuteBundleInSubprocess:
         calls: list[str] = []
 
         monkeypatch.setattr(
-            "prefect._internal.control_listener.start",
-            lambda: calls.append("listener"),
+            "prefect._internal.control_listener.configure_from_env",
+            lambda: calls.append("configure"),
         )
         monkeypatch.setattr(
             bundles_module,
@@ -282,7 +282,7 @@ class TestExecuteBundleInSubprocess:
         )
 
         assert calls == [
-            "listener",
+            "configure",
             "deserialize:function-payload",
             "deserialize:context-payload",
         ]
